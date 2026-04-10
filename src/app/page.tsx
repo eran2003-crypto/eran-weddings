@@ -15,6 +15,7 @@ export default function Home() {
   const [videos, setVideos] = useState<EventVideo[]>([]);
   const [isAdmin, setIsAdmin] = useState(false);
   const [showAllTestimonials, setShowAllTestimonials] = useState(false);
+  const [expandedVideo, setExpandedVideo] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
   const adminClickCount = useRef(0);
   const adminClickTimer = useRef<NodeJS.Timeout | null>(null);
@@ -493,11 +494,39 @@ export default function Home() {
           </div>
         )}
 
+        {/* Expanded video overlay */}
+        {expandedVideo !== null && (
+          <div
+            className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
+            onClick={() => setExpandedVideo(null)}
+          >
+            <div className="relative w-full max-w-md" style={{ height: "80vh" }} onClick={(e) => e.stopPropagation()}>
+              {(() => {
+                const v = videos.find(v => v.id === expandedVideo);
+                if (!v) return null;
+                const isYT = v.video_url.includes("youtube") || v.video_url.includes("youtu.be");
+                const isIG = v.video_url.includes("instagram.com");
+                const src = isYT
+                  ? v.video_url.replace("watch?v=", "embed/").replace("youtu.be/", "youtube.com/embed/").replace("/shorts/", "/embed/") + (v.video_url.includes("?") ? "&autoplay=1" : "?autoplay=1")
+                  : isIG ? v.video_url.split("?")[0] + "embed/" : v.video_url;
+                return <iframe src={src} className="w-full h-full rounded-2xl" allowFullScreen allow="autoplay" />;
+              })()}
+            </div>
+            <button
+              onClick={() => setExpandedVideo(null)}
+              className="absolute top-6 left-6 text-white text-3xl font-light"
+            >
+              ✕
+            </button>
+          </div>
+        )}
+
         <div className="grid grid-cols-2 gap-2 sm:gap-6">
           {videos.map((v) => (
             <div
               key={v.id}
-              className="border border-neutral-100 rounded-2xl overflow-hidden hover:border-neutral-300 transition-all duration-500"
+              className="border border-neutral-100 rounded-2xl overflow-hidden hover:border-neutral-300 transition-all duration-500 cursor-pointer"
+              onClick={() => !isAdmin && setExpandedVideo(v.id)}
             >
               {isAdmin ? (
                 <div className="p-5 space-y-2">
@@ -533,14 +562,14 @@ export default function Home() {
                         .replace("watch?v=", "embed/")
                         .replace("youtu.be/", "youtube.com/embed/")
                         .replace("/shorts/", "/embed/")}
-                      className="absolute top-0 left-0 w-full h-full"
+                      className="absolute top-0 left-0 w-full h-full pointer-events-none"
                       allowFullScreen
                     />
                   ) : v.video_url.includes("instagram.com") ? (
                     <iframe
                       src={v.video_url.split("?")[0] + "embed/"}
-                      className="absolute left-0 w-full border-0"
-                      style={{ height: "200%", top: "-60px" }}
+                      className="absolute left-0 w-full border-0 pointer-events-none"
+                      style={{ height: "250%", top: "-65px", transform: "scale(1.15)", transformOrigin: "top center" }}
                       allowFullScreen
                     />
                   ) : v.video_url.includes("drive.google.com") ? (
