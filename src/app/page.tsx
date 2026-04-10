@@ -706,10 +706,19 @@ export default function Home() {
 
         <div className="max-w-5xl mx-auto grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-5">
           {edits.map((edit, i) => {
+            const accents = [
+              "border-l-red-500",
+              "border-l-orange-500",
+              "border-l-amber-500",
+              "border-l-rose-500",
+              "border-l-pink-500",
+              "border-l-red-400",
+            ];
+            const accent = accents[i % accents.length];
             return (
             <div
               key={edit.id}
-              className="rounded-2xl border border-red-200/40 hover:border-red-400/60 transition-all duration-300 bg-white overflow-hidden"
+              className={`rounded-2xl border border-neutral-200/60 border-l-4 ${accent} hover:shadow-md transition-all duration-300 bg-white overflow-hidden`}
             >
               {isAdmin ? (
                 <div className="p-5 space-y-2">
