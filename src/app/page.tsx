@@ -16,6 +16,7 @@ export default function Home() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [showAllTestimonials, setShowAllTestimonials] = useState(false);
   const [expandedVideo, setExpandedVideo] = useState<number | null>(null);
+  const [playingVideos, setPlayingVideos] = useState<Set<number>>(new Set());
   const [loading, setLoading] = useState(true);
   const adminClickCount = useRef(0);
   const adminClickTimer = useRef<NodeJS.Timeout | null>(null);
@@ -554,23 +555,51 @@ export default function Home() {
                 </div>
               ) : v.video_url ? (
                 <div className="relative overflow-hidden rounded-2xl" style={{ paddingBottom: "150%" }}>
-                  {v.video_url.includes("youtube") ||
-                  v.video_url.includes("youtu.be") ? (
-                    <iframe
-                      src={v.video_url
-                        .replace("watch?v=", "embed/")
-                        .replace("youtu.be/", "youtube.com/embed/")
-                        .replace("/shorts/", "/embed/")}
-                      className="absolute top-0 left-0 w-full h-full "
-                      allowFullScreen
-                    />
+                  {(v.video_url.includes("youtube") || v.video_url.includes("youtu.be")) ? (
+                    playingVideos.has(v.id) ? (
+                      <iframe
+                        src={v.video_url
+                          .replace("watch?v=", "embed/")
+                          .replace("youtu.be/", "youtube.com/embed/")
+                          .replace("/shorts/", "/embed/") + "?autoplay=1&mute=0"}
+                        className="absolute top-0 left-0 w-full h-full"
+                        allowFullScreen
+                        allow="autoplay; encrypted-media"
+                      />
+                    ) : (
+                      <div
+                        className="absolute inset-0 flex items-center justify-center cursor-pointer bg-black"
+                        onClick={() => setPlayingVideos(prev => new Set([...prev, v.id]))}
+                      >
+                        <img
+                          src={`https://img.youtube.com/vi/${v.video_url.match(/(?:embed\/|v=|youtu\.be\/|shorts\/)([^?&]+)/)?.[1]}/0.jpg`}
+                          className="absolute inset-0 w-full h-full object-cover"
+                          alt=""
+                        />
+                        <div className="relative z-10 w-16 h-16 bg-red-600 rounded-full flex items-center justify-center shadow-lg">
+                          <svg className="w-7 h-7 text-white ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        </div>
+                      </div>
+                    )
                   ) : v.video_url.includes("instagram.com") ? (
-                    <iframe
-                      src={v.video_url.split("?")[0] + "embed/"}
-                      className="absolute border-0 "
-                      style={{ width: "140%", height: "300%", top: "-70px", left: "-20%", transform: "scale(1)", transformOrigin: "top center" }}
-                      allowFullScreen
-                    />
+                    <a
+                      href={v.video_url.split("?")[0]}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="absolute inset-0"
+                    >
+                      <iframe
+                        src={v.video_url.split("?")[0] + "embed/"}
+                        className="absolute border-0"
+                        style={{ width: "140%", height: "300%", top: "-70px", left: "-20%", pointerEvents: "none" }}
+                        allowFullScreen
+                      />
+                      <div className="absolute inset-0 z-10 flex items-center justify-center">
+                        <div className="w-16 h-16 bg-gradient-to-br from-purple-600 to-pink-500 rounded-full flex items-center justify-center shadow-lg">
+                          <svg className="w-7 h-7 text-white ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        </div>
+                      </div>
+                    </a>
                   ) : v.video_url.includes("drive.google.com") ? (
                     <iframe
                       src={v.video_url.replace("/view", "/preview")}
@@ -658,10 +687,20 @@ export default function Home() {
         )}
 
         <div className="max-w-5xl mx-auto grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-5">
-          {edits.map((edit) => (
+          {edits.map((edit, i) => {
+            const colors = [
+              "from-pink-500/30 to-purple-600/30",
+              "from-cyan-500/30 to-blue-600/30",
+              "from-orange-500/30 to-red-500/30",
+              "from-emerald-500/30 to-teal-600/30",
+              "from-yellow-500/30 to-amber-600/30",
+              "from-violet-500/30 to-fuchsia-600/30",
+            ];
+            const color = colors[i % colors.length];
+            return (
             <div
               key={edit.id}
-              className="rounded-2xl border border-white/20 hover:border-white/40 transition-all duration-300 hover:shadow-lg bg-white/10 backdrop-blur-sm overflow-hidden"
+              className={`rounded-2xl border border-white/20 hover:border-white/40 transition-all duration-300 hover:shadow-lg bg-gradient-to-br ${color} backdrop-blur-sm overflow-hidden`}
             >
               {isAdmin ? (
                 <div className="p-5 space-y-2">
@@ -717,7 +756,8 @@ export default function Home() {
                 </div>
               )}
             </div>
-          ))}
+          );
+          })}
         </div>
         </div>
       </section>
