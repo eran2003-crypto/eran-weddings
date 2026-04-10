@@ -70,20 +70,27 @@ export default function SubmitPage() {
 
   return (
     <main className="min-h-screen bg-white">
-      {/* Header */}
-      <section className="text-center pt-16 pb-8 px-6">
-        <h1
-          className="font-bold tracking-tighter"
-          style={{ fontSize: "clamp(2.5rem, 8vw, 5rem)" }}
-        >
-          ERAN YOSEF
-        </h1>
-        <div className="flex items-center justify-center gap-4 mt-2">
-          <div className="h-px w-8 bg-black" />
-          <p className="font-semibold tracking-[0.3em] uppercase text-sm">
-            WEDDING CLUB
-          </p>
-          <div className="h-px w-8 bg-black" />
+      {/* Header with background */}
+      <section className="relative text-center pt-24 pb-16 px-6 overflow-hidden">
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: "url('/hero-bg.jpg')" }}
+        />
+        <div className="absolute inset-0 bg-black/60" />
+        <div className="relative z-10">
+          <h1
+            className="font-bold tracking-tighter text-white"
+            style={{ fontSize: "clamp(2.5rem, 8vw, 5rem)" }}
+          >
+            ERAN YOSEF
+          </h1>
+          <div className="flex items-center justify-center gap-4 mt-2">
+            <div className="h-px w-8 bg-white/50" />
+            <p className="font-semibold tracking-[0.3em] uppercase text-sm text-white/80">
+              WEDDING CLUB
+            </p>
+            <div className="h-px w-8 bg-white/50" />
+          </div>
         </div>
       </section>
 
