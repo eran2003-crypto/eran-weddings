@@ -14,6 +14,7 @@ export default function Home() {
   const [edits, setEdits] = useState<AudioEdit[]>([]);
   const [videos, setVideos] = useState<EventVideo[]>([]);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [showAllTestimonials, setShowAllTestimonials] = useState(false);
   const [loading, setLoading] = useState(true);
   const adminClickCount = useRef(0);
   const adminClickTimer = useRef<NodeJS.Timeout | null>(null);
@@ -30,7 +31,28 @@ export default function Home() {
       supabase.from("audio_edits").select("*").order("created_at", { ascending: true }),
       supabase.from("event_videos").select("*").order("created_at", { ascending: true }),
     ]);
-    if (tRes.data) setTestimonials(tRes.data);
+    if (tRes.data) {
+      const filtered = tRes.data.filter(t => t.couple_name && t.couple_name.trim() !== '');
+      // Pin specific couples to top 8, demote others
+      const pinned = ['עדי & אליה'];
+      const demoted = ['ירין & ליאור'];
+      const sorted = [...filtered].sort((a, b) => {
+        const pinnedA = pinned.some(p => a.couple_name?.includes(p)) ? 100 : 0;
+        const pinnedB = pinned.some(p => b.couple_name?.includes(p)) ? 100 : 0;
+        const demotedA = demoted.some(d => a.couple_name?.includes(d)) ? -100 : 0;
+        const demotedB = demoted.some(d => b.couple_name?.includes(d)) ? -100 : 0;
+        const score = (t: typeof a) => {
+          let s = 0;
+          if (t.image_url) s += 4;
+          if (t.audio_url) s += 3;
+          if (t.best_thing && t.best_thing.trim()) s += 2;
+          if (t.recommendation && t.recommendation.trim()) s += 1;
+          return s;
+        };
+        return (score(b) + pinnedB + demotedB) - (score(a) + pinnedA + demotedA);
+      });
+      setTestimonials(sorted);
+    }
     if (eRes.data) setEdits(eRes.data);
     if (vRes.data) setVideos(vRes.data);
     setLoading(false);
@@ -267,10 +289,10 @@ export default function Home() {
         )}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-          {testimonials.map((t) => (
+          {(showAllTestimonials ? testimonials : testimonials.slice(0, 8)).map((t) => (
             <div
               key={t.id}
-              className="group border border-neutral-200/60 rounded-2xl overflow-hidden hover:border-neutral-300 transition-all duration-500 hover:shadow-lg bg-white"
+              className="group border border-neutral-200/60 rounded-xl sm:rounded-2xl overflow-hidden hover:border-neutral-300 transition-all duration-500 hover:shadow-lg bg-white"
             >
               {/* Image */}
               <div className="w-full aspect-[4/3] sm:aspect-[16/9] bg-neutral-50 flex items-center justify-center overflow-hidden relative">
@@ -435,6 +457,17 @@ export default function Home() {
             </div>
           ))}
         </div>
+
+        {testimonials.length > 8 && (
+          <div className="text-center mt-10">
+            <button
+              onClick={() => setShowAllTestimonials(!showAllTestimonials)}
+              className="px-8 py-3 border border-black text-black text-sm tracking-widest rounded-full hover:bg-black hover:text-white transition-all duration-300"
+            >
+              {showAllTestimonials ? "הסתר זוגות" : "הראה עוד זוגות"}
+            </button>
+          </div>
+        )}
       </section>
 
       {/* Event Videos */}
@@ -460,7 +493,7 @@ export default function Home() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        <div className="grid grid-cols-2 gap-2 sm:gap-6">
           {videos.map((v) => (
             <div
               key={v.id}
@@ -492,14 +525,29 @@ export default function Home() {
                   </button>
                 </div>
               ) : v.video_url ? (
-                <div className="aspect-video">
+                <div className="relative overflow-hidden rounded-2xl" style={{ paddingBottom: "150%" }}>
                   {v.video_url.includes("youtube") ||
                   v.video_url.includes("youtu.be") ? (
                     <iframe
                       src={v.video_url
                         .replace("watch?v=", "embed/")
-                        .replace("youtu.be/", "youtube.com/embed/")}
-                      className="w-full h-full"
+                        .replace("youtu.be/", "youtube.com/embed/")
+                        .replace("/shorts/", "/embed/")}
+                      className="absolute top-0 left-0 w-full h-full"
+                      allowFullScreen
+                    />
+                  ) : v.video_url.includes("instagram.com") ? (
+                    <iframe
+                      src={v.video_url.split("?")[0] + "embed/"}
+                      className="absolute left-0 w-full border-0"
+                      style={{ height: "200%", top: "-60px" }}
+                      allowFullScreen
+                    />
+                  ) : v.video_url.includes("drive.google.com") ? (
+                    <iframe
+                      src={v.video_url.replace("/view", "/preview")}
+                      className="absolute top-0 left-0 w-full h-full"
+                      allow="autoplay"
                       allowFullScreen
                     />
                   ) : (
@@ -541,6 +589,7 @@ export default function Home() {
             </div>
           ))}
         </div>
+
       </section>
 
       {/* Audio Edits */}
@@ -642,41 +691,50 @@ export default function Home() {
       </section>
 
       {/* About */}
-      <section className="max-w-4xl mx-auto px-6 sm:px-12 py-16 sm:py-20">
-        <div className="text-center mb-12">
-          <h2
-            className="font-bold tracking-tighter"
-            style={{ fontSize: "clamp(1.8rem, 5vw, 3.5rem)" }}
-          >
-            ABOUT
-          </h2>
-          <div className="h-px w-16 bg-black mx-auto mt-4" />
-        </div>
-        <div className="text-center space-y-8 text-neutral-500">
-          <p className="text-base md:text-lg leading-[2] font-light max-w-3xl mx-auto">
-            ערן יוסף מנגן מגיל 12.
-          </p>
-          <p className="text-base md:text-lg leading-[2] font-light max-w-3xl mx-auto">
-            מאז הוא עלה על במות בכל הארץ ומחוצה לה — רזידנט בשלוותה, אומן 17,
-            פורום פנגויה, הופעה בפסטיבל Sziget בבודפשט, נגינה בניו יורק, מופע
-            בלייב פארק לצד נועה קירל ועדן בן זקן, וממש עכשיו חזר מטור בתאילנד וברזיל.
-          </p>
-          <div className="h-px w-10 bg-neutral-300 mx-auto" />
-          <p className="text-base md:text-lg leading-[2] font-light max-w-3xl mx-auto">
-            המאשאפים שלו פוצצו את טיקטוק — עשרות מיליוני צפיות.
-            {" "}<span className="font-medium text-black">&ldquo;ברולטה&rdquo;</span> זכה בשיר השנה.
-            {" "}<span className="font-medium text-black">&ldquo;ואן גוך&rdquo;</span> הגיע למיליוני צפיות עוד לפני שיצא רשמית.
-          </p>
-          <div className="h-px w-10 bg-neutral-300 mx-auto" />
-          <p className="text-base md:text-lg leading-[2] font-light max-w-3xl mx-auto">
-            <span className="font-medium text-black">הקטע שלו?</span> ליצור את המוזיקה והשילובים מאפס — כל שילוב,
-            כל מעבר, כל ערב נבנה מחדש לפי מה שקורה על הרחבה.
-          </p>
-          <div className="h-px w-10 bg-neutral-300 mx-auto" />
-          <p className="text-base md:text-lg leading-[2] font-light max-w-3xl mx-auto">
-            ומעבר לכל זה — <span className="font-medium text-black">לערן באמת אכפת.</span> כבר בפגישה מרגישים את זה.
-            הוא זוכר כל זוג לפי התאריך (תנסו אותו על אמת), ושם את החוויה של הקהל לפני הכל.
-          </p>
+      <section className="relative overflow-hidden">
+        {/* Background Image */}
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-fixed"
+          style={{ backgroundImage: "url('/about-bg.jpg')" }}
+        />
+        <div className="absolute inset-0 bg-black/70" />
+
+        <div className="relative z-10 max-w-4xl mx-auto px-6 sm:px-12 py-24 sm:py-32">
+          <div className="text-center mb-16">
+            <h2
+              className="font-bold tracking-tighter text-white"
+              style={{ fontSize: "clamp(2rem, 6vw, 4rem)" }}
+            >
+              ABOUT
+            </h2>
+            <div className="h-px w-16 bg-white/50 mx-auto mt-4" />
+          </div>
+          <div className="text-center space-y-8 text-neutral-300">
+            <p className="text-base md:text-lg leading-[2] font-light max-w-3xl mx-auto">
+              ערן יוסף מנגן מגיל 12.
+            </p>
+            <p className="text-base md:text-lg leading-[2] font-light max-w-3xl mx-auto">
+              מאז הוא עלה על במות בכל הארץ ומחוצה לה — רזידנט בשלוותה, אומן 17,
+              פורום פנגויה, הופעה בפסטיבל Sziget בבודפשט, נגינה בניו יורק, מופע
+              בלייב פארק לצד נועה קירל ועדן בן זקן, וממש עכשיו חזר מטור בתאילנד וברזיל.
+            </p>
+            <div className="h-px w-10 bg-white/30 mx-auto" />
+            <p className="text-base md:text-lg leading-[2] font-light max-w-3xl mx-auto">
+              המאשאפים שלו פוצצו את טיקטוק — עשרות מיליוני צפיות.
+              {" "}<span className="font-semibold text-white">&ldquo;ברולטה&rdquo;</span> זכה בשיר השנה.
+              {" "}<span className="font-semibold text-white">&ldquo;ואן גוך&rdquo;</span> הגיע למיליוני צפיות עוד לפני שיצא רשמית.
+            </p>
+            <div className="h-px w-10 bg-white/30 mx-auto" />
+            <p className="text-base md:text-lg leading-[2] font-light max-w-3xl mx-auto">
+              <span className="font-semibold text-white">הקטע שלו?</span> ליצור את המוזיקה והשילובים מאפס — כל שילוב,
+              כל מעבר, כל ערב נבנה מחדש לפי מה שקורה על הרחבה.
+            </p>
+            <div className="h-px w-10 bg-white/30 mx-auto" />
+            <p className="text-base md:text-lg leading-[2] font-light max-w-3xl mx-auto">
+              ומעבר לכל זה — <span className="font-semibold text-white">לערן באמת אכפת.</span> כבר בפגישה מרגישים את זה.
+              הוא זוכר כל זוג לפי התאריך (תנסו אותו על אמת), ושם את החוויה של הקהל לפני הכל.
+            </p>
+          </div>
         </div>
       </section>
 
