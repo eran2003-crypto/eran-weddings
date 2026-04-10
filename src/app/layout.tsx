@@ -33,10 +33,11 @@ const space = Space_Grotesk({
 
 export const metadata: Metadata = {
   title: "Eran Yosef | Wedding Club",
-  description: "הרחבה שלכם לא תהיה אותו דבר",
-  robots: {
-    index: false,
-    follow: false,
+  description: "Eran Yosef | Wedding Club",
+  openGraph: {
+    title: "Eran Yosef | Wedding Club",
+    description: "Eran Yosef | Wedding Club",
+    images: ["/hero-bg.jpg"],
   },
 };
 
