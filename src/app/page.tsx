@@ -606,21 +606,12 @@ export default function Home() {
                       </div>
                     )
                   ) : v.video_url.includes("instagram.com") ? (
-                    playingVideos.has(v.id) ? (
-                      <iframe
-                        src={v.video_url.split("?")[0] + "embed/"}
-                        className="absolute border-0"
-                        style={{ width: "140%", height: "300%", top: "-70px", left: "-20%" }}
-                        allowFullScreen
-                        allow="autoplay"
-                      />
-                    ) : (
-                      <div className="absolute inset-0 bg-gradient-to-br from-purple-900 to-pink-800 flex items-center justify-center">
-                        <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-                          <div className="w-3 h-3 border-l-[6px] border-l-white border-y-[4px] border-y-transparent" />
-                        </div>
-                      </div>
-                    )
+                    <iframe
+                      src={v.video_url.split("?")[0] + "embed/"}
+                      className="absolute border-0"
+                      style={{ width: "140%", height: "300%", top: "-70px", left: "-20%" }}
+                      allowFullScreen
+                    />
                   ) : v.video_url.includes("drive.google.com") ? (
                     <iframe
                       src={v.video_url.replace("/view", "/preview")}
