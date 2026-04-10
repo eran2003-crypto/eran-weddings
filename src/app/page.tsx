@@ -521,7 +521,7 @@ export default function Home() {
           </div>
         )}
 
-        <div className="grid grid-cols-2 gap-2 sm:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 max-w-md sm:max-w-none mx-auto">
           {videos.map((v) => (
             <div
               key={v.id}
@@ -568,8 +568,8 @@ export default function Home() {
                   ) : v.video_url.includes("instagram.com") ? (
                     <iframe
                       src={v.video_url.split("?")[0] + "embed/"}
-                      className="absolute left-0 w-full border-0 pointer-events-none"
-                      style={{ height: "250%", top: "-65px", transform: "scale(1.15)", transformOrigin: "top center" }}
+                      className="absolute border-0 pointer-events-none"
+                      style={{ width: "140%", height: "300%", top: "-70px", left: "-20%", transform: "scale(1)", transformOrigin: "top center" }}
                       allowFullScreen
                     />
                   ) : v.video_url.includes("drive.google.com") ? (
@@ -622,26 +622,29 @@ export default function Home() {
       </section>
 
       {/* Audio Edits */}
-      <section className="px-6 py-20">
+      <section className="px-6 py-20 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-indigo-900 to-black" />
+        <div className="absolute inset-0 opacity-20" style={{ backgroundImage: "radial-gradient(circle at 20% 50%, #ff6b6b 0%, transparent 50%), radial-gradient(circle at 80% 20%, #4ecdc4 0%, transparent 50%), radial-gradient(circle at 50% 80%, #ffd93d 0%, transparent 50%)" }} />
+        <div className="relative z-10">
         <div className="text-center mb-16">
           <h2
-            className="font-bold tracking-tighter"
+            className="font-bold tracking-tighter text-white"
             style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)" }}
           >
             MY EDITS
           </h2>
-          <p className="text-neutral-400 text-sm mt-5 italic max-w-md mx-auto">
+          <p className="text-white/60 text-sm mt-5 italic max-w-md mx-auto">
             &ldquo;היינו בכמה חתונות שלך ואשכרה כל ערב נשמע שונה ומתאים לקהל..&rdquo;
           </p>
-          <p className="text-neutral-400 text-base mt-5 tracking-wide font-light" style={{ fontStyle: 'italic' }}>
+          <p className="text-white/60 text-base mt-5 tracking-wide font-light" style={{ fontStyle: 'italic' }}>
             לא כל חתונה חייבת להישמע אותו דבר ;)
           </p>
-          <p className="text-neutral-500 text-sm mt-4 max-w-lg mx-auto leading-relaxed">
+          <p className="text-white/50 text-sm mt-4 max-w-lg mx-auto leading-relaxed">
             קחו טעימה קטנה מדברים מגניבים שאפשר לעשות.
             <br />
             כמובן שהכל מותאם לטעם שלכם ולקהל הספציפי באירוע.
           </p>
-          <div className="h-px w-16 bg-black mx-auto mt-4" />
+          <div className="h-px w-16 bg-white/30 mx-auto mt-4" />
         </div>
 
         {isAdmin && (
@@ -659,7 +662,7 @@ export default function Home() {
           {edits.map((edit) => (
             <div
               key={edit.id}
-              className="rounded-2xl border border-neutral-200/60 hover:border-neutral-300 transition-all duration-300 hover:shadow-md bg-white overflow-hidden"
+              className="rounded-2xl border border-white/20 hover:border-white/40 transition-all duration-300 hover:shadow-lg bg-white/10 backdrop-blur-sm overflow-hidden"
             >
               {isAdmin ? (
                 <div className="p-5 space-y-2">
@@ -702,13 +705,13 @@ export default function Home() {
                 </div>
               ) : (
                 <div className="p-5 flex flex-col gap-3">
-                  <p className="text-base font-bold tracking-tight leading-snug" style={{ fontFamily: "'Georgia', 'Times New Roman', serif", fontStyle: 'italic' }}>{edit.title}</p>
+                  <p className="text-base font-bold tracking-tight leading-snug text-white" style={{ fontFamily: "'Georgia', 'Times New Roman', serif", fontStyle: 'italic' }}>{edit.title}</p>
                   {edit.audio_url ? (
                     <audio controls className="w-full h-9" style={{ filter: 'contrast(0.8)' }}>
                       <source src={edit.audio_url} type="audio/mpeg" />
                     </audio>
                   ) : (
-                    <span className="text-xs text-neutral-300 tracking-wide">
+                    <span className="text-xs text-white/30 tracking-wide">
                       COMING SOON
                     </span>
                   )}
@@ -716,6 +719,7 @@ export default function Home() {
               )}
             </div>
           ))}
+        </div>
         </div>
       </section>
 
