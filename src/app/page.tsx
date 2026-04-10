@@ -525,8 +525,7 @@ export default function Home() {
           {videos.map((v) => (
             <div
               key={v.id}
-              className="border border-neutral-100 rounded-2xl overflow-hidden hover:border-neutral-300 transition-all duration-500 cursor-pointer"
-              onClick={() => !isAdmin && setExpandedVideo(v.id)}
+              className="border border-neutral-100 rounded-2xl overflow-hidden hover:border-neutral-300 transition-all duration-500"
             >
               {isAdmin ? (
                 <div className="p-5 space-y-2">
@@ -562,13 +561,13 @@ export default function Home() {
                         .replace("watch?v=", "embed/")
                         .replace("youtu.be/", "youtube.com/embed/")
                         .replace("/shorts/", "/embed/")}
-                      className="absolute top-0 left-0 w-full h-full pointer-events-none"
+                      className="absolute top-0 left-0 w-full h-full "
                       allowFullScreen
                     />
                   ) : v.video_url.includes("instagram.com") ? (
                     <iframe
                       src={v.video_url.split("?")[0] + "embed/"}
-                      className="absolute border-0 pointer-events-none"
+                      className="absolute border-0 "
                       style={{ width: "140%", height: "300%", top: "-70px", left: "-20%", transform: "scale(1)", transformOrigin: "top center" }}
                       allowFullScreen
                     />
