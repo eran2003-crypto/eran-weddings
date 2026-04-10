@@ -739,7 +739,14 @@ export default function Home() {
       </section>
 
       {/* Contact Form */}
-      <section className="max-w-lg mx-auto px-4 sm:px-6 py-16 sm:py-20">
+      <section className="relative overflow-hidden">
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: "url('/contact-bg.jpg')" }}
+        />
+        <div className="absolute inset-0 bg-white/85" />
+
+        <div className="relative z-10 max-w-lg mx-auto px-4 sm:px-6 py-16 sm:py-20">
         <div className="text-center mb-12">
           <h2
             className="font-bold tracking-tighter"
@@ -830,6 +837,7 @@ export default function Home() {
             </button>
           </form>
         )}
+        </div>
       </section>
 
       {/* Footer */}
