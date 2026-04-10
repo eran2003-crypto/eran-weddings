@@ -17,6 +17,31 @@ export default function Home() {
   const [showAllTestimonials, setShowAllTestimonials] = useState(false);
   const [expandedVideo, setExpandedVideo] = useState<number | null>(null);
   const [playingVideos, setPlayingVideos] = useState<Set<number>>(new Set());
+  const videoRefs = useRef<Map<number, HTMLDivElement>>(new Map());
+
+  // Auto-play videos when scrolled into view
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const id = Number(entry.target.getAttribute("data-video-id"));
+          if (entry.isIntersecting && entry.intersectionRatio > 0.6) {
+            setPlayingVideos((prev) => new Set([...prev, id]));
+          } else {
+            setPlayingVideos((prev) => {
+              const next = new Set(prev);
+              next.delete(id);
+              return next;
+            });
+          }
+        });
+      },
+      { threshold: 0.6 }
+    );
+
+    videoRefs.current.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, [videos]);
   const [loading, setLoading] = useState(true);
   const adminClickCount = useRef(0);
   const adminClickTimer = useRef<NodeJS.Timeout | null>(null);
@@ -526,6 +551,8 @@ export default function Home() {
           {videos.map((v) => (
             <div
               key={v.id}
+              data-video-id={v.id}
+              ref={(el) => { if (el) videoRefs.current.set(v.id, el); }}
               className="border border-neutral-100 rounded-2xl overflow-hidden hover:border-neutral-300 transition-all duration-500"
             >
               {isAdmin ? (
@@ -561,45 +588,39 @@ export default function Home() {
                         src={v.video_url
                           .replace("watch?v=", "embed/")
                           .replace("youtu.be/", "youtube.com/embed/")
-                          .replace("/shorts/", "/embed/") + "?autoplay=1&mute=0"}
+                          .replace("/shorts/", "/embed/") + "?autoplay=1&mute=1&loop=1&playsinline=1"}
                         className="absolute top-0 left-0 w-full h-full"
                         allowFullScreen
-                        allow="autoplay; encrypted-media"
+                        allow="autoplay; encrypted-media; picture-in-picture"
                       />
                     ) : (
-                      <div
-                        className="absolute inset-0 flex items-center justify-center cursor-pointer bg-black"
-                        onClick={() => setPlayingVideos(prev => new Set([...prev, v.id]))}
-                      >
+                      <div className="absolute inset-0 flex items-center justify-center bg-black">
                         <img
                           src={`https://img.youtube.com/vi/${v.video_url.match(/(?:embed\/|v=|youtu\.be\/|shorts\/)([^?&]+)/)?.[1]}/0.jpg`}
-                          className="absolute inset-0 w-full h-full object-cover"
+                          className="absolute inset-0 w-full h-full object-cover opacity-60"
                           alt=""
                         />
-                        <div className="relative z-10 w-16 h-16 bg-red-600 rounded-full flex items-center justify-center shadow-lg">
-                          <svg className="w-7 h-7 text-white ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        <div className="relative z-10 w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+                          <div className="w-3 h-3 border-l-[6px] border-l-white border-y-[4px] border-y-transparent" />
                         </div>
                       </div>
                     )
                   ) : v.video_url.includes("instagram.com") ? (
-                    <a
-                      href={v.video_url.split("?")[0]}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="absolute inset-0"
-                    >
+                    playingVideos.has(v.id) ? (
                       <iframe
                         src={v.video_url.split("?")[0] + "embed/"}
                         className="absolute border-0"
-                        style={{ width: "140%", height: "300%", top: "-70px", left: "-20%", pointerEvents: "none" }}
+                        style={{ width: "140%", height: "300%", top: "-70px", left: "-20%" }}
                         allowFullScreen
+                        allow="autoplay"
                       />
-                      <div className="absolute inset-0 z-10 flex items-center justify-center">
-                        <div className="w-16 h-16 bg-gradient-to-br from-purple-600 to-pink-500 rounded-full flex items-center justify-center shadow-lg">
-                          <svg className="w-7 h-7 text-white ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                    ) : (
+                      <div className="absolute inset-0 bg-gradient-to-br from-purple-900 to-pink-800 flex items-center justify-center">
+                        <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+                          <div className="w-3 h-3 border-l-[6px] border-l-white border-y-[4px] border-y-transparent" />
                         </div>
                       </div>
-                    </a>
+                    )
                   ) : v.video_url.includes("drive.google.com") ? (
                     <iframe
                       src={v.video_url.replace("/view", "/preview")}
@@ -650,29 +671,26 @@ export default function Home() {
       </section>
 
       {/* Audio Edits */}
-      <section className="px-6 py-20 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-indigo-900 to-black" />
-        <div className="absolute inset-0 opacity-20" style={{ backgroundImage: "radial-gradient(circle at 20% 50%, #ff6b6b 0%, transparent 50%), radial-gradient(circle at 80% 20%, #4ecdc4 0%, transparent 50%), radial-gradient(circle at 50% 80%, #ffd93d 0%, transparent 50%)" }} />
-        <div className="relative z-10">
+      <section className="px-6 py-20">
         <div className="text-center mb-16">
           <h2
-            className="font-bold tracking-tighter text-white"
+            className="font-bold tracking-tighter"
             style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)" }}
           >
             MY EDITS
           </h2>
-          <p className="text-white/60 text-sm mt-5 italic max-w-md mx-auto">
+          <p className="text-neutral-400 text-sm mt-5 italic max-w-md mx-auto">
             &ldquo;היינו בכמה חתונות שלך ואשכרה כל ערב נשמע שונה ומתאים לקהל..&rdquo;
           </p>
-          <p className="text-white/60 text-base mt-5 tracking-wide font-light" style={{ fontStyle: 'italic' }}>
+          <p className="text-neutral-400 text-base mt-5 tracking-wide font-light" style={{ fontStyle: 'italic' }}>
             לא כל חתונה חייבת להישמע אותו דבר ;)
           </p>
-          <p className="text-white/50 text-sm mt-4 max-w-lg mx-auto leading-relaxed">
+          <p className="text-neutral-500 text-sm mt-4 max-w-lg mx-auto leading-relaxed">
             קחו טעימה קטנה מדברים מגניבים שאפשר לעשות.
             <br />
             כמובן שהכל מותאם לטעם שלכם ולקהל הספציפי באירוע.
           </p>
-          <div className="h-px w-16 bg-white/30 mx-auto mt-4" />
+          <div className="h-px w-16 bg-black mx-auto mt-4" />
         </div>
 
         {isAdmin && (
@@ -688,19 +706,10 @@ export default function Home() {
 
         <div className="max-w-5xl mx-auto grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-5">
           {edits.map((edit, i) => {
-            const colors = [
-              "from-pink-500/30 to-purple-600/30",
-              "from-cyan-500/30 to-blue-600/30",
-              "from-orange-500/30 to-red-500/30",
-              "from-emerald-500/30 to-teal-600/30",
-              "from-yellow-500/30 to-amber-600/30",
-              "from-violet-500/30 to-fuchsia-600/30",
-            ];
-            const color = colors[i % colors.length];
             return (
             <div
               key={edit.id}
-              className={`rounded-2xl border border-white/20 hover:border-white/40 transition-all duration-300 hover:shadow-lg bg-gradient-to-br ${color} backdrop-blur-sm overflow-hidden`}
+              className="rounded-2xl border border-red-200/40 hover:border-red-400/60 transition-all duration-300 bg-white overflow-hidden"
             >
               {isAdmin ? (
                 <div className="p-5 space-y-2">
@@ -743,13 +752,13 @@ export default function Home() {
                 </div>
               ) : (
                 <div className="p-5 flex flex-col gap-3">
-                  <p className="text-base font-bold tracking-tight leading-snug text-white" style={{ fontFamily: "'Georgia', 'Times New Roman', serif", fontStyle: 'italic' }}>{edit.title}</p>
+                  <p className="text-base font-bold tracking-tight leading-snug text-black" style={{ fontFamily: "'Georgia', 'Times New Roman', serif", fontStyle: 'italic' }}>{edit.title}</p>
                   {edit.audio_url ? (
                     <audio controls className="w-full h-9" style={{ filter: 'contrast(0.8)' }}>
                       <source src={edit.audio_url} type="audio/mpeg" />
                     </audio>
                   ) : (
-                    <span className="text-xs text-white/30 tracking-wide">
+                    <span className="text-xs text-neutral-300 tracking-wide">
                       COMING SOON
                     </span>
                   )}
@@ -758,7 +767,6 @@ export default function Home() {
             </div>
           );
           })}
-        </div>
         </div>
       </section>
 
