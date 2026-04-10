@@ -90,7 +90,7 @@ export default function SubmitPage() {
       {/* Form */}
       <section className="max-w-lg mx-auto px-6 py-12">
         <div className="text-center mb-10">
-          <h2 className="text-xl font-semibold mb-3">היי, כיף שלקחתם חלק בערב המדהים!</h2>
+          <h2 className="text-xl font-semibold mb-3">כיף שבחרתם בי לקחת חלק בערב שלכם!</h2>
           <p className="text-neutral-500 text-sm leading-[1.8]">
             שתפו רגע אחד שאהבתם — זה אומר לי המון.
           </p>
