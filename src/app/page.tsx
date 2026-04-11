@@ -16,6 +16,7 @@ export default function Home() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [showAllTestimonials, setShowAllTestimonials] = useState(false);
   const [expandedVideo, setExpandedVideo] = useState<number | null>(null);
+  const [showAllVideos, setShowAllVideos] = useState(false);
   const [playingVideos, setPlayingVideos] = useState<Set<number>>(new Set());
   const videoRefs = useRef<Map<number, HTMLDivElement>>(new Map());
 
@@ -551,7 +552,7 @@ export default function Home() {
         )}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 max-w-md sm:max-w-none mx-auto">
-          {videos.map((v) => (
+          {(showAllVideos ? videos : videos.slice(0, 4)).map((v) => (
             <div
               key={v.id}
               data-video-id={v.id}
@@ -657,6 +658,16 @@ export default function Home() {
           ))}
         </div>
 
+        {videos.length > 4 && (
+          <div className="text-center mt-10">
+            <button
+              onClick={() => setShowAllVideos(!showAllVideos)}
+              className="px-8 py-3 border border-black text-black text-sm tracking-widest rounded-full hover:bg-black hover:text-white transition-all duration-300"
+            >
+              {showAllVideos ? "הצג פחות" : "הצג עוד סרטונים"}
+            </button>
+          </div>
+        )}
       </section>
 
       {/* Audio Edits */}
@@ -773,7 +784,7 @@ export default function Home() {
         {/* Background Image */}
         <div
           className="absolute inset-0 bg-cover bg-center bg-fixed"
-          style={{ backgroundImage: "url('/about-bg.jpg')" }}
+          style={{ backgroundImage: "url('/contact-bg.jpg')" }}
         />
         <div className="absolute inset-0 bg-black/70" />
 
