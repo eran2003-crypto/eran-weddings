@@ -818,11 +818,6 @@ export default function Home() {
               <span className="font-semibold text-white">הקטע שלו?</span> ליצור את המוזיקה והשילובים מאפס — כל שילוב,
               כל מעבר, כל ערב נבנה מחדש לפי מה שקורה על הרחבה.
             </p>
-            <div className="h-px w-10 bg-white/30 mx-auto" />
-            <p className="text-base md:text-lg leading-[2] font-light max-w-3xl mx-auto">
-              ומעבר לכל זה — <span className="font-semibold text-white">לערן באמת אכפת.</span> כבר בפגישה מרגישים את זה.
-              הוא זוכר כל זוג לפי התאריך (תנסו אותו על אמת), ושם את החוויה של הקהל לפני הכל.
-            </p>
           </div>
         </div>
       </section>
