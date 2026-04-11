@@ -115,8 +115,6 @@ export default function Home() {
       wedding_date: formData.date,
       venue: formData.venue,
     });
-    const message = `היי ערן! 👋%0Aאנחנו ${formData.coupleName}%0Aטלפון: ${formData.phone}%0Aתאריך: ${formData.date}%0Aמקום: ${formData.venue}`;
-    window.open(`https://wa.me/972544480145?text=${message}`, "_blank");
     setFormSent(true);
   };
 
