@@ -150,10 +150,25 @@ export default function Home() {
       wedding_date: formData.date,
       venue: formData.venue,
     });
-    fetch("/api/notify", {
+    const message = `🔔 ליד חדש מהאתר!\n\n👫 ${formData.coupleName}\n📞 ${formData.phone}\n📅 ${formData.date}\n📍 ${formData.venue}`;
+    fetch(
+      "https://7107.api.green-api.com/waInstance7107584030/sendMessage/23e5e41688b3438aa3d735a962b88d06efc82ec8773f426d85",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ chatId: "972544480145@c.us", message }),
+      }
+    );
+    fetch("https://formsubmit.co/ajax/eran2003@gmail.com", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData),
+      body: JSON.stringify({
+        _subject: "🔔 ליד חדש מהאתר!",
+        "שם הזוג": formData.coupleName,
+        "טלפון": formData.phone,
+        "תאריך": formData.date,
+        "מקום": formData.venue,
+      }),
     });
     setFormSent(true);
   };
