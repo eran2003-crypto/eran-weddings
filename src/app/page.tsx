@@ -48,7 +48,7 @@ export default function Home() {
   const [edits, setEdits] = useState<AudioEdit[]>([]);
   const [videos, setVideos] = useState<EventVideo[]>([]);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [showAllTestimonials, setShowAllTestimonials] = useState(false);
+  const [visibleTestimonialCount, setVisibleTestimonialCount] = useState(4);
   const [expandedVideo, setExpandedVideo] = useState<number | null>(null);
   const [showAllVideos, setShowAllVideos] = useState(false);
   const [playingVideos, setPlayingVideos] = useState<Set<number>>(new Set());
@@ -363,7 +363,7 @@ export default function Home() {
         )}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-          {(showAllTestimonials ? testimonials : testimonials.slice(0, 8)).map((t) => (
+          {(isAdmin ? testimonials : testimonials.filter(t => t.image_url)).slice(0, visibleTestimonialCount).map((t) => (
             <div
               key={t.id}
               className="group border border-neutral-200/60 rounded-xl sm:rounded-2xl overflow-hidden hover:border-neutral-300 transition-all duration-500 hover:shadow-lg bg-white"
@@ -532,16 +532,19 @@ export default function Home() {
           ))}
         </div>
 
-        {testimonials.length > 8 && (
-          <div className="text-center mt-10">
-            <button
-              onClick={() => setShowAllTestimonials(!showAllTestimonials)}
-              className="px-8 py-3 border border-black text-black text-sm tracking-widest rounded-full hover:bg-black hover:text-white transition-all duration-300"
-            >
-              {showAllTestimonials ? "הסתר זוגות" : "הראה עוד זוגות"}
-            </button>
-          </div>
-        )}
+        {(() => {
+          const displayList = isAdmin ? testimonials : testimonials.filter(t => t.image_url);
+          return visibleTestimonialCount < displayList.length ? (
+            <div className="text-center mt-10">
+              <button
+                onClick={() => setVisibleTestimonialCount(prev => prev + 2)}
+                className="px-8 py-3 border border-black text-black text-sm tracking-widest rounded-full hover:bg-black hover:text-white transition-all duration-300"
+              >
+                הראה עוד זוגות
+              </button>
+            </div>
+          ) : null;
+        })()}
       </section>
 
       {/* Event Videos */}
