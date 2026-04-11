@@ -843,7 +843,7 @@ export default function Home() {
             <p className="text-4xl mb-4">🎉</p>
             <p className="text-xl font-semibold">נשלח!</p>
             <p className="text-sm text-neutral-400 mt-2">
-              ערן יחזור אליכם בהקדם
+              ערב של החיים בדרך
             </p>
           </div>
         ) : (
