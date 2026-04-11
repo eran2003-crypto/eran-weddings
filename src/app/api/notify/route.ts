@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
-  const { coupleName, phone, date, venue } = await request.json();
+  const { coupleName, phone, date, venue, isPending } = await request.json();
 
-  const message = `🔔 ליד חדש מהאתר!\n\n👫 ${coupleName}\n📞 ${phone}\n📅 ${date}\n📍 ${venue}`;
+  const message = isPending
+    ? `⏳ חוות דעת חדשה ממתינה לאישור!\n\n👫 ${coupleName}\n📅 ${date}\n📍 ${venue}\n\nהיכנס לאתר → 3 קליקים על הפוטר → אשר`
+    : `🔔 ליד חדש מהאתר!\n\n👫 ${coupleName}\n📞 ${phone}\n📅 ${date}\n📍 ${venue}`;
 
   // WhatsApp notification
   await fetch(

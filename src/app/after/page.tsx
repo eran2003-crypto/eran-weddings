@@ -41,6 +41,20 @@ export default function SubmitPage() {
         best_thing: formData.best_thing,
         recommendation: formData.recommendation,
         image_url: imageUrl,
+        video_url: "pending_approval",
+      });
+
+      // Notify Eran via WhatsApp
+      fetch("/api/notify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          coupleName: formData.couple_name,
+          phone: "",
+          date: formData.date,
+          venue: formData.venue,
+          isPending: true,
+        }),
       });
 
       setSubmitted(true);

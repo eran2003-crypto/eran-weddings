@@ -1,6 +1,40 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
+import type { SupabaseClient } from "@supabase/supabase-js";
+
+function PendingReviews({ supabase: sb, onApprove, onDelete }: { supabase: SupabaseClient; onApprove: (id: number) => void; onDelete: (id: number) => void }) {
+  const [pending, setPending] = useState<Array<{ id: number; couple_name: string; date: string; venue: string; best_thing: string; recommendation: string; image_url: string | null }>>([]);
+
+  useEffect(() => {
+    sb.from("testimonials").select("*").eq("video_url", "pending_approval").then(({ data }) => {
+      if (data) setPending(data);
+    });
+  }, [sb]);
+
+  if (pending.length === 0) return null;
+
+  return (
+    <div className="mb-10 p-6 bg-yellow-50 border border-yellow-200 rounded-2xl">
+      <h3 className="font-bold text-lg mb-4 text-center">⏳ ממתינים לאישור ({pending.length})</h3>
+      <div className="space-y-4">
+        {pending.map((t) => (
+          <div key={t.id} className="bg-white p-4 rounded-xl border border-neutral-200 flex items-center justify-between gap-4">
+            <div className="flex-1">
+              <p className="font-semibold">{t.couple_name}</p>
+              <p className="text-xs text-neutral-400">{t.date} · {t.venue}</p>
+              {t.best_thing && <p className="text-sm text-neutral-600 mt-1">{t.best_thing.substring(0, 100)}...</p>}
+            </div>
+            <div className="flex gap-2">
+              <button onClick={() => onApprove(t.id)} className="px-4 py-2 bg-green-500 text-white text-xs rounded-full">אשר</button>
+              <button onClick={() => onDelete(t.id)} className="px-4 py-2 bg-red-500 text-white text-xs rounded-full">מחק</button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 import {
   supabase,
   uploadFile,
@@ -60,7 +94,7 @@ export default function Home() {
       supabase.from("event_videos").select("*").order("created_at", { ascending: true }),
     ]);
     if (tRes.data) {
-      const filtered = tRes.data.filter(t => t.couple_name && t.couple_name.trim() !== '');
+      const filtered = tRes.data.filter(t => t.couple_name && t.couple_name.trim() !== '' && t.video_url !== 'pending_approval');
       // Pin specific couples to top 8, demote others
       const pinned = ['עדי & אליה'];
       const demoted = ['ירין & ליאור'];
@@ -158,6 +192,12 @@ export default function Home() {
     if (url) {
       updateTestimonial(id, "audio_url", url);
     }
+  };
+
+  // Admin: Approve pending testimonial
+  const approveTestimonial = async (id: number) => {
+    await supabase.from("testimonials").update({ video_url: null }).eq("id", id);
+    loadData();
   };
 
   // Admin: Edits
@@ -309,14 +349,17 @@ export default function Home() {
         </div>
 
         {isAdmin && (
-          <div className="mb-8 flex justify-center gap-3">
-            <button
-              onClick={addTestimonial}
-              className="px-6 py-3 bg-black text-white text-sm rounded-full hover:bg-neutral-800 transition-colors"
-            >
-              + הוסף זוג חדש
-            </button>
-          </div>
+          <>
+            <PendingReviews supabase={supabase} onApprove={approveTestimonial} onDelete={deleteTestimonial} />
+            <div className="mb-8 flex justify-center gap-3">
+              <button
+                onClick={addTestimonial}
+                className="px-6 py-3 bg-black text-white text-sm rounded-full hover:bg-neutral-800 transition-colors"
+              >
+                + הוסף זוג חדש
+              </button>
+            </div>
+          </>
         )}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
