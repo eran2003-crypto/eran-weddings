@@ -613,7 +613,23 @@ export default function Home() {
                       className="absolute top-0 left-0 w-full h-full object-cover"
                       controls
                       playsInline
+                      muted
+                      loop
                       preload="metadata"
+                      ref={(el) => {
+                        if (!el) return;
+                        const observer = new IntersectionObserver(
+                          ([entry]) => {
+                            if (entry.isIntersecting) {
+                              el.play().catch(() => {});
+                            } else {
+                              el.pause();
+                            }
+                          },
+                          { threshold: 0.5 }
+                        );
+                        observer.observe(el);
+                      }}
                     >
                       <source src={v.video_url} type="video/mp4" />
                     </video>
