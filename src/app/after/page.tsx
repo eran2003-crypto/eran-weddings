@@ -41,7 +41,6 @@ export default function SubmitPage() {
         best_thing: formData.best_thing,
         recommendation: formData.recommendation,
         image_url: imageUrl,
-        video_url: "pending_approval",
       });
 
       // Notify Eran via WhatsApp
