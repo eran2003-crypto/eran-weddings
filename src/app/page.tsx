@@ -291,7 +291,7 @@ export default function Home() {
       <section
         className={`flex flex-col items-center justify-center min-h-[100vh] px-6 pb-16 relative ${isAdmin ? "pt-28" : "pt-20"}`}
         style={{
-          backgroundImage: "url('/hero-bg.jpg')",
+          backgroundImage: "url('/eran-weddings/hero-bg.jpg')",
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
@@ -830,7 +830,7 @@ export default function Home() {
         {/* Background Image */}
         <div
           className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: "url('/about-bg.jpg')" }}
+          style={{ backgroundImage: "url('/eran-weddings/about-bg.jpg')" }}
         />
         <div className="absolute inset-0 bg-black/70" />
 
@@ -873,7 +873,7 @@ export default function Home() {
       <section className="relative overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: "url('/contact-bg.jpg')" }}
+          style={{ backgroundImage: "url('/eran-weddings/contact-bg.jpg')" }}
         />
         <div className="absolute inset-0 bg-white/85" />
 
