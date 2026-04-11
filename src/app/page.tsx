@@ -115,6 +115,11 @@ export default function Home() {
       wedding_date: formData.date,
       venue: formData.venue,
     });
+    fetch("/api/notify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+    });
     setFormSent(true);
   };
 
