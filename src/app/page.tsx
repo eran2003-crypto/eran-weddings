@@ -843,23 +843,24 @@ export default function Home() {
           </div>
           <div className="text-center space-y-8 text-neutral-300">
             <p className="text-base md:text-lg leading-[2] font-light max-w-3xl mx-auto">
-              ערן יוסף מנגן מגיל 12.
+              ערן יוסף מנגן מגיל 12, ומאז עלה על אינספור במות בארץ ובעולם.
             </p>
             <p className="text-base md:text-lg leading-[2] font-light max-w-3xl mx-auto">
-              מאז הוא עלה על במות בכל הארץ ומחוצה לה — רזידנט בשלוותה, אומן 17,
-              פורום פנגויה, הופעה בפסטיבל Sziget בבודפשט, נגינה בניו יורק, מופע
-              בלייב פארק לצד נועה קירל ועדן בן זקן, וממש עכשיו חזר מטור בתאילנד וברזיל.
-            </p>
-            <div className="h-px w-10 bg-white/30 mx-auto" />
-            <p className="text-base md:text-lg leading-[2] font-light max-w-3xl mx-auto">
-              המאשאפים שלו פוצצו את טיקטוק — עשרות מיליוני צפיות.
-              {" "}<span className="font-semibold text-white">&ldquo;ברולטה&rdquo;</span> זכה בשיר השנה.
-              {" "}<span className="font-semibold text-white">&ldquo;ואן גוך&rdquo;</span> הגיע למיליוני צפיות עוד לפני שיצא רשמית.
+              הוא הופיע בפסטיבלים, ימי סטודנט, פאנג׳ויה והפקות גדולות, לצד מועדונים מובילים כמו שלוותה, אומן 17 ופורום.
+              במקביל, לקח את המוזיקה שלו גם לחו״ל עם הופעות בפסטיבל Sziget בבודפשט, הופעות בניו יורק ומסע הופעות בתאילנד וברזיל.
+              בין היתר הופיע בלייב פארק לצד נועה קירל ועדן בן זקן, ומביא איתו ניסיון בימתי רחב וסטנדרט גבוה של הופעה.
             </p>
             <div className="h-px w-10 bg-white/30 mx-auto" />
             <p className="text-base md:text-lg leading-[2] font-light max-w-3xl mx-auto">
-              <span className="font-semibold text-white">הקטע שלו?</span> ליצור את המוזיקה והשילובים מאפס — כל שילוב,
-              כל מעבר, כל ערב נבנה מחדש לפי מה שקורה על הרחבה.
+              גם כמפיק ויוצר, ערן משאיר חותם עם שירים שזכו למיליוני צפיות ברשת.
+              {" "}<span className="font-semibold text-white">&ldquo;ברולטה&rdquo;</span> שזכה לשיר השנה,
+              ו<span className="font-semibold text-white">&ldquo;ואן גוך&rdquo;</span> שהגיע למיליוני צפיות עוד לפני שיצא רשמית, הם רק חלק מהרפרטואר שמחבר בין רחבה לבין יצירה אמיתית.
+            </p>
+            <div className="h-px w-10 bg-white/30 mx-auto" />
+            <p className="text-base md:text-lg leading-[2] font-light max-w-3xl mx-auto">
+              הניסיון הזה מתורגם ישירות לרחבה של החתונה.
+              ערן לא עובד עם פלייליסט קבוע, אלא בונה את הערב מתוך הקשבה מדויקת לקהל, שליטה באנרגיה ויכולת להחזיק רחבה חיה לאורך זמן.
+              התוצאה היא אירוע שמרגיש מדויק, זורם ומלא — כזה שלא צריך להסביר למה הוא עובד, פשוט מרגישים את זה.
             </p>
           </div>
         </div>
