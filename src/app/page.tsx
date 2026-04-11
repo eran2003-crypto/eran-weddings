@@ -783,7 +783,7 @@ export default function Home() {
       <section className="relative overflow-hidden">
         {/* Background Image */}
         <div
-          className="absolute inset-0 bg-cover bg-center bg-fixed"
+          className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: "url('/about-bg.jpg')" }}
         />
         <div className="absolute inset-0 bg-black/70" />
