@@ -585,30 +585,7 @@ export default function Home() {
                 </div>
               ) : v.video_url ? (
                 <div className="relative overflow-hidden rounded-2xl" style={{ paddingBottom: "150%" }}>
-                  {(v.video_url.includes("youtube") || v.video_url.includes("youtu.be")) ? (
-                    playingVideos.has(v.id) ? (
-                      <iframe
-                        src={v.video_url
-                          .replace("watch?v=", "embed/")
-                          .replace("youtu.be/", "youtube.com/embed/")
-                          .replace("/shorts/", "/embed/") + "?autoplay=1&mute=1&loop=1&playsinline=1"}
-                        className="absolute top-0 left-0 w-full h-full"
-                        allowFullScreen
-                        allow="autoplay; encrypted-media; picture-in-picture"
-                      />
-                    ) : (
-                      <div className="absolute inset-0 flex items-center justify-center bg-black">
-                        <img
-                          src={`https://img.youtube.com/vi/${v.video_url.match(/(?:embed\/|v=|youtu\.be\/|shorts\/)([^?&]+)/)?.[1]}/0.jpg`}
-                          className="absolute inset-0 w-full h-full object-cover opacity-60"
-                          alt=""
-                        />
-                        <div className="relative z-10 w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-                          <div className="w-3 h-3 border-l-[6px] border-l-white border-y-[4px] border-y-transparent" />
-                        </div>
-                      </div>
-                    )
-                  ) : v.video_url.endsWith(".mp4") ? (
+                  {v.video_url.endsWith(".mp4") ? (
                     <video
                       className="absolute top-0 left-0 w-full h-full object-cover"
                       controls
