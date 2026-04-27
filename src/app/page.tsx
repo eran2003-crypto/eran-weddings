@@ -306,7 +306,7 @@ export default function Home() {
       <section
         className={`flex flex-col items-center justify-center min-h-[100vh] px-6 pb-16 relative ${isAdmin ? "pt-28" : "pt-20"}`}
         style={{
-          backgroundImage: "url('/eran-weddings/hero-bg.jpg')",
+          backgroundImage: "url('/hero-bg.jpg')",
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}

@@ -74,7 +74,7 @@ export default function SubmitPage() {
       <section className="relative text-center pt-24 pb-16 px-6 overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: "url('/eran-weddings/hero-bg.jpg')" }}
+          style={{ backgroundImage: "url('/hero-bg.jpg')" }}
         />
         <div className="absolute inset-0 bg-black/60" />
         <div className="relative z-10">
