@@ -845,7 +845,7 @@ export default function Home() {
         {/* Background Image */}
         <div
           className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: "url('/eran-weddings/about-bg.jpg')" }}
+          style={{ backgroundImage: "url('/about-bg.jpg')" }}
         />
         <div className="absolute inset-0 bg-black/70" />
 
@@ -888,7 +888,7 @@ export default function Home() {
       <section className="relative overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: "url('/eran-weddings/contact-bg.jpg')" }}
+          style={{ backgroundImage: "url('/contact-bg.jpg')" }}
         />
         <div className="absolute inset-0 bg-white/85" />
 
