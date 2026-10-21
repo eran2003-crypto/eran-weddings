@@ -150,6 +150,17 @@ export default function Home() {
       wedding_date: formData.date,
       venue: formData.venue,
     });
+    // הליד נכנס גם למערכת של המשרד (Willi Eran Office), ישר ל"לידים באוויר"
+    fetch("https://willy-ran-office.vercel.app/api/public?site=lead", {
+      method: "POST",
+      headers: { "Content-Type": "text/plain" },
+      body: JSON.stringify({
+        coupleName: formData.coupleName,
+        phone: formData.phone,
+        date: formData.date,
+        venue: formData.venue,
+      }),
+    }).catch(() => {});
     const message = `🔔 ליד חדש מהאתר!\n\n👫 ${formData.coupleName}\n📞 ${formData.phone}\n📅 ${formData.date}\n📍 ${formData.venue}`;
     fetch(
       "https://7107.api.green-api.com/waInstance7107584030/sendMessage/23e5e41688b3438aa3d735a962b88d06efc82ec8773f426d85",
