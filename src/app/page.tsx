@@ -43,6 +43,36 @@ import {
   type EventVideo,
 } from "@/lib/supabase";
 
+// המלצות שזוגות שלחו בוואטסאפ, בדיוק כמו שכתבו (בלי תמונה: מוצגות ככרטיס טקסט)
+const STATIC_TESTIMONIALS: Testimonial[] = [
+  { id: -1, couple_name: "רומי & איתמר", date: "29.10.26", venue: "", image_url: null, video_url: null, audio_url: null, best_thing: "", recommendation: "ערן ווילי!!!!!! \nאין לנו מילים להגיד כמה אנחנו שמחים שלקחתם חלק כל כך משמעותי בערב שלנו אתמול. אתם באמת הבחירה המושלמת, בזכותכם לא הפסקנו לרקוד ברחבה שלמה ולא הפסקנו לשמוע כמה הדי-ג׳יי מדהים, העפתם אותנו באוויר באמת \nאוהבים אתכם מאוד ותודה רבה רבה רבה \nבשמחות!", created_at: "" },
+  { id: -2, couple_name: "אריאל & שרית", date: "26.10.26", venue: "", image_url: null, video_url: null, audio_url: null, best_thing: "", recommendation: "חברה תודה על הכלללל\nהיה מדהיםםםם❤️❤️❤️\nנהננו ככ והרמתם ברמות ❤️❤️\nככ הרבה אנשים באו להגיד לנו כמה זהdj מטורףףף (כמובן שהעברנו מספר טלפון) ושהם נשארו עד יותר מאוחר כי לא יכלו לעזוב את הרחבה 😍", created_at: "" },
+  { id: -3, couple_name: "עודד & גאיה", date: "25.10.26", venue: "", image_url: null, video_url: null, audio_url: null, best_thing: "", recommendation: "ערןן רוצים להודות לכם על ערב מהסרטים!!!!!! היה לנו ככ כיף איתכם המוזיקה הייתה אשששש ואנחנו לא מפסיקים לקבל מחמאות מכולם על השירים הטובים והאווירה חשמל! תודה לכם היה פשוט ערב מושלם ❤️🔥🔥❤️ \nתודה רבה אלופים 🥳🎊❤️🙏🏼✨", created_at: "" },
+  { id: -4, couple_name: "יערי & דותן", date: "15.10.26", venue: "", image_url: null, video_url: null, audio_url: null, best_thing: "", recommendation: "תקשיב איזה מטורף היה לנוווו\nכל כך שמחים על ההחלטה להביא את ערן והייתם מדהימים, קשובים ואנחנו לא מפסיקים לקבל הודעות על איזה די גי אדיר היה\nחולים עליכם היה באמת פשוט מושלם❤️❤️❤️", created_at: "" },
+  { id: -5, couple_name: "אמה & יהודה", date: "14.10.26", venue: "", image_url: null, video_url: null, audio_url: null, best_thing: "", recommendation: "שמע ערן פשוט היה פסיכי \nאין לנו מילים \nלא היה אחד שלא בא מקצועיםי שהוא הדיג׳י הכי טוב שהם שמעו\nממש תודה על כל התהליך איתכם אתם מקצועים בטירוף ❤️", created_at: "" },
+];
+
+// סרטונים מחתונות, שמורים בתיקיית public/videos של האתר
+const STATIC_VIDEOS: EventVideo[] = [
+  { id: -1, title: "", video_url: "/eran-weddings/videos/wedding-1.mp4", thumbnail_url: "", created_at: "" },
+  { id: -2, title: "", video_url: "/eran-weddings/videos/wedding-2.mp4", thumbnail_url: "", created_at: "" },
+  { id: -3, title: "", video_url: "/eran-weddings/videos/wedding-3.mp4", thumbnail_url: "", created_at: "" },
+  { id: -4, title: "", video_url: "/eran-weddings/videos/wedding-4.mp4", thumbnail_url: "", created_at: "" },
+  { id: -5, title: "", video_url: "/eran-weddings/videos/wedding-5.mp4", thumbnail_url: "", created_at: "" },
+  { id: -6, title: "", video_url: "/eran-weddings/videos/wedding-6.mp4", thumbnail_url: "", created_at: "" },
+];
+
+// המלצות עם תמונה והמלצות טקסט לסירוגין, כדי שהעמוד לא יהיה רק טקסט
+function mixTestimonials(withImage: Testimonial[], textOnly: Testimonial[]) {
+  const out: Testimonial[] = [];
+  const n = Math.max(withImage.length, textOnly.length);
+  for (let i = 0; i < n; i++) {
+    if (withImage[i]) out.push(withImage[i]);
+    if (textOnly[i]) out.push(textOnly[i]);
+  }
+  return out;
+}
+
 export default function Home() {
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [edits, setEdits] = useState<AudioEdit[]>([]);
@@ -53,6 +83,8 @@ export default function Home() {
   const [showAllVideos, setShowAllVideos] = useState(false);
   const [playingVideos, setPlayingVideos] = useState<Set<number>>(new Set());
   const videoRefs = useRef<Map<number, HTMLDivElement>>(new Map());
+  // באתר: הסרטונים החדשים קודם. במצב עריכה: רק מה שבמסד הנתונים (אפשר לערוך ולמחוק)
+  const shownVideos = isAdmin ? videos : [...STATIC_VIDEOS, ...videos];
 
   // Auto-play videos when scrolled into view
   useEffect(() => {
@@ -389,12 +421,13 @@ export default function Home() {
         )}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-          {(isAdmin ? testimonials : testimonials.filter(t => t.image_url)).slice(0, visibleTestimonialCount).map((t) => (
+          {(isAdmin ? testimonials : mixTestimonials(testimonials.filter(t => t.image_url), STATIC_TESTIMONIALS)).slice(0, visibleTestimonialCount).map((t) => (
             <div
               key={t.id}
               className="group border border-neutral-200/60 rounded-xl sm:rounded-2xl overflow-hidden hover:border-neutral-300 transition-all duration-500 hover:shadow-lg bg-white"
             >
               {/* Image */}
+              {(t.image_url || isAdmin) && (
               <div className="w-full aspect-[4/3] sm:aspect-[16/9] bg-neutral-50 flex items-center justify-center overflow-hidden relative">
                 {t.image_url ? (
                   <img
@@ -456,6 +489,7 @@ export default function Home() {
                   </button>
                 )}
               </div>
+              )}
 
               <div className="p-5">
                 {isAdmin ? (
@@ -523,7 +557,7 @@ export default function Home() {
                       </p>
                     )}
                     {t.recommendation && (
-                      <p className="text-sm text-neutral-500 mt-3 italic leading-relaxed">
+                      <p className="text-sm text-neutral-500 mt-3 italic leading-relaxed whitespace-pre-line">
                         &ldquo;{t.recommendation}&rdquo;
                       </p>
                     )}
@@ -559,7 +593,7 @@ export default function Home() {
         </div>
 
         {(() => {
-          const displayList = isAdmin ? testimonials : testimonials.filter(t => t.image_url);
+          const displayList = isAdmin ? testimonials : mixTestimonials(testimonials.filter(t => t.image_url), STATIC_TESTIMONIALS);
           return visibleTestimonialCount < displayList.length ? (
             <div className="text-center mt-10">
               <button
@@ -624,7 +658,7 @@ export default function Home() {
         )}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 max-w-md sm:max-w-none mx-auto">
-          {(showAllVideos ? videos : videos.slice(0, 4)).map((v) => (
+          {(showAllVideos ? shownVideos : shownVideos.slice(0, 4)).map((v) => (
             <div
               key={v.id}
               data-video-id={v.id}
@@ -730,7 +764,7 @@ export default function Home() {
           ))}
         </div>
 
-        {videos.length > 4 && (
+        {shownVideos.length > 4 && (
           <div className="text-center mt-10">
             <button
               onClick={() => setShowAllVideos(!showAllVideos)}
