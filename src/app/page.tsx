@@ -42,6 +42,7 @@ import {
   type AudioEdit,
   type EventVideo,
 } from "@/lib/supabase";
+import NewSite from "./NewSite";
 
 // המלצות שזוגות שלחו בוואטסאפ, בדיוק כמו שכתבו (בלי תמונה: מוצגות ככרטיס טקסט)
 const STATIC_TESTIMONIALS: Testimonial[] = [
@@ -315,10 +316,26 @@ export default function Home() {
     return (
       <main className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <div className="w-8 h-8 border-2 border-black border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-sm text-neutral-400">טוען...</p>
+          <p className="animate-pulse" style={{ fontFamily: "var(--font-bebas)", fontSize: "56px", letterSpacing: "2px", lineHeight: 1 }}>ERAN YOSEF</p>
+          <p className="text-xs text-neutral-400 mt-2" style={{ letterSpacing: ".35em" }}>WEDDING CLUB</p>
         </div>
       </main>
+    );
+  }
+
+  // העיצוב החדש לגולשים. מצב העריכה (שלוש לחיצות על השורה בתחתית) נשאר בדיוק כמו שהיה
+  if (!isAdmin) {
+    return (
+      <NewSite
+        testimonials={mixTestimonials(testimonials.filter(t => t.image_url), STATIC_TESTIMONIALS)}
+        videos={shownVideos}
+        edits={edits}
+        formData={formData}
+        setFormData={setFormData}
+        formSent={formSent}
+        onSubmit={handleSubmit}
+        onFooterClick={handleFooterClick}
+      />
     );
   }
 
