@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Playfair_Display, Cormorant_Garamond, Bebas_Neue, Space_Grotesk } from "next/font/google";
+import { Inter, Playfair_Display, Cormorant_Garamond, Bebas_Neue, Space_Grotesk, Heebo } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({
@@ -25,6 +25,12 @@ const bebas = Bebas_Neue({
   variable: "--font-bebas",
 });
 
+const heebo = Heebo({
+  subsets: ["hebrew", "latin"],
+  weight: ["300", "400", "500", "700", "800"],
+  variable: "--font-heebo",
+});
+
 const space = Space_Grotesk({
   subsets: ["latin"],
   weight: ["400", "500", "700"],
@@ -48,7 +54,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="he" dir="rtl">
-      <body className={`${inter.className} ${playfair.variable} ${cormorant.variable} ${bebas.variable} ${space.variable} min-h-screen bg-white text-black antialiased`}>
+      <body className={`${inter.className} ${playfair.variable} ${cormorant.variable} ${bebas.variable} ${space.variable} ${heebo.variable} min-h-screen bg-white text-black antialiased`}>
         {children}
       </body>
     </html>
